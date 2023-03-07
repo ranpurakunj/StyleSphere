@@ -59,14 +59,14 @@ namespace StyleSphere.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TblCustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //if (!TblCustomerExists(id))
+                //{
+                //    return NotFound();
+                //}
+                //else
+                //{
+                //    throw;
+                //}
             }
 
             return NoContent();
@@ -77,10 +77,18 @@ namespace StyleSphere.Controllers
         [HttpPost]
         public async Task<ActionResult<TblCustomer>> PostTblCustomer(TblCustomer tblCustomer)
         {
-            _context.TblCustomers.Add(tblCustomer);
-            await _context.SaveChangesAsync();
+            if (TblCustomerExists(tblCustomer.Email))
+            {
+                return BadRequest();
+            }
+            else
+            {
+                _context.TblCustomers.Add(tblCustomer);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTblCustomer", new { id = tblCustomer.CustomerId }, tblCustomer);
+                return CreatedAtAction("GetTblCustomer", new { id = tblCustomer.CustomerId }, tblCustomer);
+            }
+            
         }
 
         // DELETE: api/TblCustomers/5
@@ -99,9 +107,9 @@ namespace StyleSphere.Controllers
             return NoContent();
         }
 
-        private bool TblCustomerExists(int id)
+        private bool TblCustomerExists(string email)
         {
-            return _context.TblCustomers.Any(e => e.CustomerId == id);
+            return _context.TblCustomers.Any(e => e.Email == email);
         }
     }
 }
