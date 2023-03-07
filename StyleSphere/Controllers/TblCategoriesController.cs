@@ -22,10 +22,20 @@ namespace StyleSphere.Controllers
 
         // GET: api/TblCategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TblCategory>>> GetTblCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            return await _context.TblCategories.ToListAsync();
+            var categories = await _context.TblCategories
+                .Select(c => new CategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryName = c.CategoryName,
+                    Description = c.Description
+                })
+                .ToListAsync();
+
+            return categories;
         }
+
 
         // GET: api/TblCategories/5
         [HttpGet("{id}")]
