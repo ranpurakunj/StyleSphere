@@ -27,18 +27,56 @@ namespace StyleSphere.Controllers
             return await _context.TblProducts.ToListAsync();
         }
 
+
+
         // GET: api/TblProducts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TblProduct>> GetTblProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> GetTblProduct(int id)
         {
+            
             var tblProduct = await _context.TblProducts.FindAsync(id);
-
             if (tblProduct == null)
             {
                 return NotFound();
             }
 
-            return tblProduct;
+            //return tblProduct;
+
+            // For View Model
+            ProductViewModel model = new ProductViewModel();
+            model.ProductId=tblProduct.ProductId;  
+            model.ProductName=tblProduct.ProductName;
+            model.Image1 = tblProduct.Image1;
+            model.Image2 = tblProduct.Image2;
+            model.Image3 = tblProduct.Image3;
+            model.ThumbnailImage= tblProduct.ThumbnailImage;
+            model.Price=tblProduct.Price;
+            model.Description = tblProduct.Description;
+            model.ColorCount = tblProduct.TblProductMappings.Select(a => a.ColorId).Distinct().Count();
+            model.NoOfRatings = tblProduct.TblRatings.Count();
+            model.ratings = (tblProduct.TblRatings.Select(a => a.Rating).Sum() / tblProduct.TblRatings.Count());
+
+            List<TblSizeMaster> sizeList = new List<TblSizeMaster>();
+            List<TblColorMaster> ColorList = new List<TblColorMaster>();
+            foreach (var item in tblProduct.TblProductMappings)
+            {
+                var colorData = _context.TblColorMasters.Where(a => a.ColorId == item.ColorId).FirstOrDefault();
+                var sizeData = _context.TblSizeMasters.Where(a => a.SizeId == item.SizeId).FirstOrDefault();
+                
+                TblSizeMaster objSize = new TblSizeMaster();
+                objSize.SizeId = item.SizeId;
+                objSize.Eusize = sizeData.Eusize;
+                objSize.Ussize = sizeData.Ussize;
+                sizeList.Add(objSize);
+
+                TblColorMaster objColor = new TblColorMaster();
+                objColor.ColorId = item.ColorId;
+                objColor.Color = colorData.Color;
+                ColorList.Add(objColor);
+            }
+            model.ColorList = ColorList;
+            model.sizeList = sizeList;
+            return model;
         }
 
         // PUT: api/TblProducts/5
