@@ -85,12 +85,34 @@ namespace StyleSphere.Controllers
         // POST: api/TblFavorites
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TblFavorite>> PostTblFavorite(TblFavorite tblFavorite)
+        public async Task<IActionResult> SaveFavorite(int customerId, int productId)
         {
-            _context.TblFavorites.Add(tblFavorite);
+            // Get the customer and product from the database
+            var customer = await _context.TblCustomers.FindAsync(customerId);
+            var product = await _context.TblProducts.FindAsync(productId);
+
+            // If either the customer or product is not found, return a 404 error
+            if (customer == null || product == null)
+            {
+                return NotFound();
+            }
+
+            // Create a new favorite object and set its properties
+            var favorite = new TblFavorite
+            {
+                CustomerId = customerId,
+                ProductId = productId,
+                ActiveStatus = true,
+                Customer = customer,
+                Product = product
+            };
+
+            // Add the new favorite to the database and save changes
+            _context.TblFavorites.Add(favorite);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTblFavorite", new { id = tblFavorite.FavoriteId }, tblFavorite);
+            // Return a success response
+            return Ok();
         }
 
         // DELETE: api/TblFavorites/5

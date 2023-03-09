@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Abstractions;
 using StyleSphere.Models;
 
 namespace StyleSphere.Controllers
@@ -29,7 +30,7 @@ namespace StyleSphere.Controllers
 
         // GET: api/TblOrderDatums/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderDatumViewModel>> GetTblOrderDatum(int id)
+        public async Task<ActionResult<OrderDatumViewModel>> GetTblOrderDatumByCustomerID(int id)
         {
             var tblOrderDatum = _context.TblOrderData
                 .Where(e => e.CustomerId == id)
@@ -48,6 +49,37 @@ namespace StyleSphere.Controllers
                 return NotFound();
             }
             return Ok(tblOrderDatum);
+        }
+
+        [Route("checkout")]
+        [HttpGet]
+        public async Task<ActionResult<OrderDatumViewModel>> Checkout(int customerID)
+        {
+            var tblOrderDatum = _context.TblOrderData.Where(a => a.CustomerId == customerID).ToList();
+            List<OrderDatumViewModel> orders = new List<OrderDatumViewModel>();
+            foreach (var order in tblOrderDatum)
+            {
+                OrderDatumViewModel model = new OrderDatumViewModel();
+                model.OrderId = order.OrderId;
+                model.CustomerId = order.CustomerId;
+                model.OrderDate = order.OrderDate;
+                model.ShippingAddress = order.ShippingAddress;
+                model.BillingAddress = order.BillingAddress;
+                model.TrackingId = order.TrackingId;
+                model.NetAmount = order.NetAmount;
+                foreach (var detail in order.TblOrderDetails)
+                {
+                    model.ProductName = detail.ProductMapping.Product.ProductName;
+                    model.thumbnailImage = detail.ProductMapping.Product.ThumbnailImage;
+                    model.Quantity = detail.Quantity;
+                    model.color = detail.ProductMapping.Color.Color;
+                    model.EUSize = detail.ProductMapping.Size.Eusize;
+                    model.USSize = detail.ProductMapping.Size.Ussize;
+                    model.price = detail.Price;
+                }
+                orders.Add(model);
+            }
+            return Ok(orders);
         }
 
         // PUT: api/TblOrderDatums/5

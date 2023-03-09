@@ -15,5 +15,20 @@
         public string TrackingId { get; set; } = null!;
 
         public decimal NetAmount { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string thumbnailImage { get; set; }
+
+        public int Quantity { get; set; }
+
+        public string color { get; set; }
+
+        public int EUSize { get; set; }
+
+        public int USSize { get; set; }
+
+        public decimal price { get; set; }
+
     }
 }

@@ -50,7 +50,7 @@ namespace StyleSphere.Controllers
             {
                 return BadRequest("Invalid Email or Password");
             }
-            return Ok("Login Successful");
+            return Ok(customer);
         }
 
         // PUT: api/TblCustomers/5
