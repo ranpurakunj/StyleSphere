@@ -30,19 +30,19 @@ namespace StyleSphere.Controllers
 
         // GET: api/TblOrderDatums/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderDatumViewModel>> GetTblOrderDatumByCustomerID(int id)
+        public async Task<ActionResult<OrderDataDto>> GetTblOrderDatumByCustomerID(int id)
         {
             var tblOrderDatum = _context.TblOrderData
                 .Where(e => e.CustomerId == id)
-                .Select(c=>new OrderDatumViewModel
+                .Select(c=>new OrderDataDto
                 {
-                    OrderId=c.OrderId,
-                    CustomerId=c.CustomerId,
-                    OrderDate=c.OrderDate,
-                    ShippingAddress=c.ShippingAddress,
-                    BillingAddress=c.BillingAddress,
-                    TrackingId=c.TrackingId,
-                    NetAmount=c.NetAmount,
+                    OrderId = c.OrderId,
+                    CustomerId = c.CustomerId,
+                    OrderDate = c.OrderDate,
+                    ShippingAddress = c.ShippingAddress,
+                    BillingAddress = c.BillingAddress,
+                    TrackingId = c.TrackingId,
+                    NetAmount = c.NetAmount
                 }).ToList();
             if (tblOrderDatum == null)
             {
