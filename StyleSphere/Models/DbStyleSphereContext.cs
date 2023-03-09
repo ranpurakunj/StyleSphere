@@ -72,7 +72,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.CustomerId);
 
-            entity.ToTable("Customer");
+            entity.ToTable("Customers");
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Address)
@@ -104,18 +104,18 @@ public partial class DbStyleSphereContext : DbContext
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.FavoriteId)
                 .ValueGeneratedOnAdd()
-                .HasColumnName("FavoriteID");
+                .HasColumnName("FavoritesID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
             entity.HasOne(d => d.Customer).WithMany()
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Favorites_tbl_Customer");
+                .HasConstraintName("FK_Favorites_Customers");
 
             entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Favorites_tbl_Product");
+                .HasConstraintName("FK_Favorites_Products");
         });
 
         modelBuilder.Entity<TblOrderDatum>(entity =>
@@ -142,7 +142,7 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.TblOrderData)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_OrderData_tbl_Customer");
+                .HasConstraintName("FK_OrdersData_Customers");
         });
 
         modelBuilder.Entity<TblOrderDetail>(entity =>
@@ -160,12 +160,12 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.TblOrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_OrderDetail_tbl_OrderData");
+                .HasConstraintName("FK_OrderDetails_OrdersData");
 
             entity.HasOne(d => d.ProductMapping).WithMany(p => p.TblOrderDetails)
                 .HasForeignKey(d => d.ProductMappingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_OrderDetail_tbl_ProductMapping");
+                .HasConstraintName("FK_OrderDetails_ProductMappings");
         });
 
         modelBuilder.Entity<TblProduct>(entity =>
@@ -191,12 +191,12 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.TblProducts)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Product_tbl_Categories");
+                .HasConstraintName("FK_Products_Categories");
 
             entity.HasOne(d => d.SubCategory).WithMany(p => p.TblProducts)
                 .HasForeignKey(d => d.SubCategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Product_tbl_SubCategories");
+                .HasConstraintName("FK_Products_Sub_Categories");
         });
 
         modelBuilder.Entity<TblProductMapping>(entity =>
@@ -213,17 +213,17 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Color).WithMany(p => p.TblProductMappings)
                 .HasForeignKey(d => d.ColorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_ProductMapping_tbl_ColorMaster");
+                .HasConstraintName("FK_ProductMappings_ColorMaster");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TblProductMappings)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_ProductMapping_tbl_Product");
+                .HasConstraintName("FK_ProductMappings_Products");
 
             entity.HasOne(d => d.Size).WithMany(p => p.TblProductMappings)
                 .HasForeignKey(d => d.SizeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_ProductMapping_tbl_SizeMaster");
+                .HasConstraintName("FK_ProductMappings_SizesMaster");
         });
 
         modelBuilder.Entity<TblRating>(entity =>
@@ -239,12 +239,12 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.TblRatings)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Rating_tbl_Customer");
+                .HasConstraintName("FK_Ratings_Customers");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TblRatings)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_Rating_tbl_Product");
+                .HasConstraintName("FK_Ratings_Products");
         });
 
         modelBuilder.Entity<TblSizeMaster>(entity =>
@@ -274,7 +274,7 @@ public partial class DbStyleSphereContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.TblSubCategories)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_SubCategories_tbl_Categories");
+                .HasConstraintName("FK_Sub_Categories_Categories");
         });
 
         OnModelCreatingPartial(modelBuilder);

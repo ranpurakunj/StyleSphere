@@ -67,7 +67,7 @@ namespace StyleSphere.Controllers
                 _context.TblCustomers.Add(tblCustomer);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetTblCustomer", new { id = tblCustomer.CustomerId }, tblCustomer);
+                return CreatedAtAction("PostTblCustomer", new { id = tblCustomer.CustomerId }, tblCustomer);
             }
 
         }
