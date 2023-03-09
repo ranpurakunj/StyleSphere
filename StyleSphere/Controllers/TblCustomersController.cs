@@ -41,6 +41,18 @@ namespace StyleSphere.Controllers
             return tblCustomer;
         }
 
+        [Route("login")]
+        [HttpGet]
+        public async Task<ActionResult<TblCustomer>> LoginCustomer(string email, string password)
+        {
+            var customer = _context.TblCustomers.SingleOrDefault(c => c.Email == email);
+            if (customer == null || customer.Password != password)
+            {
+                return BadRequest("Invalid Email or Password");
+            }
+            return Ok("Login Successful");
+        }
+
         // PUT: api/TblCustomers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

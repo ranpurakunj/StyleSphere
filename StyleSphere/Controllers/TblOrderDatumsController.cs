@@ -29,16 +29,25 @@ namespace StyleSphere.Controllers
 
         // GET: api/TblOrderDatums/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TblOrderDatum>> GetTblOrderDatum(int id)
+        public async Task<ActionResult<OrderDatumViewModel>> GetTblOrderDatum(int id)
         {
-            var tblOrderDatum = await _context.TblOrderData.FindAsync(id);
-
+            var tblOrderDatum = _context.TblOrderData
+                .Where(e => e.CustomerId == id)
+                .Select(c=>new OrderDatumViewModel
+                {
+                    OrderId=c.OrderId,
+                    CustomerId=c.CustomerId,
+                    OrderDate=c.OrderDate,
+                    ShippingAddress=c.ShippingAddress,
+                    BillingAddress=c.BillingAddress,
+                    TrackingId=c.TrackingId,
+                    NetAmount=c.NetAmount,
+                }).ToList();
             if (tblOrderDatum == null)
             {
                 return NotFound();
             }
-
-            return tblOrderDatum;
+            return Ok(tblOrderDatum);
         }
 
         // PUT: api/TblOrderDatums/5
@@ -77,6 +86,7 @@ namespace StyleSphere.Controllers
         [HttpPost]
         public async Task<ActionResult<TblOrderDatum>> PostTblOrderDatum(TblOrderDatum tblOrderDatum)
         {
+            //tblOrderDatum.NetAmount = tblOrderDatum.TblOrderDetails.Sum(a => a.Total);
             _context.TblOrderData.Add(tblOrderDatum);
             await _context.SaveChangesAsync();
 

@@ -24,4 +24,6 @@ public partial class TblCustomer
     public virtual ICollection<TblOrderDatum> TblOrderData { get; } = new List<TblOrderDatum>();
 
     public virtual ICollection<TblRating> TblRatings { get; } = new List<TblRating>();
+
+    public virtual ICollection<TblFavorite> TblFavorites { get; } = new List<TblFavorite>();
 }

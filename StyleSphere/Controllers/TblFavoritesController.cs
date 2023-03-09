@@ -27,6 +27,16 @@ namespace StyleSphere.Controllers
             return await _context.TblFavorites.ToListAsync();
         }
 
+        [HttpGet("customer/{customerId}")]
+        public IActionResult GetFavoritesForCustomer(int customerId)
+        {
+            var favorites = _context.TblFavorites
+                                     .Where(f => f.CustomerId == customerId)
+                                     .ToList();
+
+            return Ok(favorites);
+        }
+
         // GET: api/TblFavorites/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TblFavorite>> GetTblFavorite(int id)

@@ -36,6 +36,22 @@ namespace StyleSphere.Controllers
             return categories;
         }
 
+        [HttpGet]
+        [Route("ShowOnTop")]
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetShowonTopCategories()
+        {
+            var categories = await _context.TblCategories
+                .Where(c=>c.ShowOnTop)
+                .Select(c => new CategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryName = c.CategoryName,
+                    Description = c.Description
+                })
+                .ToListAsync();
+
+            return categories;
+        }
 
         // GET: api/TblCategories/5
         [HttpGet("{id}")]
