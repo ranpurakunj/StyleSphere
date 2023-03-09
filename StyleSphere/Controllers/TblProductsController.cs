@@ -25,8 +25,8 @@ namespace StyleSphere.Controllers
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetTblProducts()
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblproduct2 = _context.TblProducts.ToList();
-            products = _GetProductViewModels(products, tblproduct2);
+            var tblproduct = _context.TblProducts.ToList();
+            products = _GetProductViewModels(products, tblproduct);
             return Ok(products);
 
         }
@@ -36,8 +36,8 @@ namespace StyleSphere.Controllers
         public async Task<ActionResult<ProductViewModel>> GetTblProduct(int id)
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct1 = _context.TblProducts.Where(e => e.ProductId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct1);
+            var tblProduct = _context.TblProducts.Where(e => e.ProductId == id).ToList();
+            products = _GetProductViewModels(products, tblProduct);
             return Ok(products); 
         }
 
@@ -46,8 +46,8 @@ namespace StyleSphere.Controllers
         public async Task<ActionResult<ProductViewModel>> GetTblProductByCategory(int id)
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct5 = _context.TblProducts.Where(e => e.CategoryId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct5);
+            var tblProduct = _context.TblProducts.Where(e => e.CategoryId == id).ToList();
+            products = _GetProductViewModels(products, tblProduct);
             return Ok(Ok(products));
         }
 
@@ -56,8 +56,8 @@ namespace StyleSphere.Controllers
         public async Task<ActionResult<ProductViewModel>> GetTblProductBySubCategory(int id)
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct6 = _context.TblProducts.Where(e => e.SubCategoryId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct6);
+            var tblProduct = _context.TblProducts.Where(e => e.SubCategoryId == id).ToList();
+            products = _GetProductViewModels(products, tblProduct);
             return Ok(products);
         }
 
@@ -66,51 +66,9 @@ namespace StyleSphere.Controllers
         public async Task<ActionResult<ProductViewModel>> GetTblProductUnderPrice(decimal price)
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct4 = _context.TblProducts.Where(e => e.Price <= price).ToList();
-            products = _GetProductViewModels(products, tblProduct4);
+            var tblProduct = _context.TblProducts.Where(e => e.Price <= price).ToList();
+            products = _GetProductViewModels(products, tblProduct);
             return Ok(products);
-        }
-
-        // PUT: api/TblProducts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblProduct(int id, TblProduct tblProduct)
-        {
-            if (id != tblProduct.ProductId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(tblProduct).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TblProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/TblProducts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<TblProduct>> PostTblProduct(TblProduct tblProduct)
-        {
-            _context.TblProducts.Add(tblProduct);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTblProduct", new { id = tblProduct.ProductId }, tblProduct);
         }
 
         [Route("search")]
@@ -123,27 +81,71 @@ namespace StyleSphere.Controllers
             return Ok(products);
         }
 
-        // DELETE: api/TblProducts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTblProduct(int id)
-        {
-            var tblProduct = await _context.TblProducts.FindAsync(id);
-            if (tblProduct == null)
-            {
-                return NotFound();
-            }
+        // PUT: api/TblProducts/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutTblProduct(int id, TblProduct tblProduct)
+        //{
+        //    if (id != tblProduct.ProductId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.TblProducts.Remove(tblProduct);
-            await _context.SaveChangesAsync();
+        //    _context.Entry(tblProduct).State = EntityState.Modified;
 
-            return NoContent();
-        }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!TblProductExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-        private bool TblProductExists(int id)
-        {
-            return _context.TblProducts.Any(e => e.ProductId == id);
-            //_context.TblProducts.Where(e => e.ProductName.Contains(searchText) || e.Description.Contains(searchText)).ToList();
-        }
+        //    return NoContent();
+        //}
+
+        //// POST: api/TblProducts
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<TblProduct>> PostTblProduct(TblProduct tblProduct)
+        //{
+        //    _context.TblProducts.Add(tblProduct);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetTblProduct", new { id = tblProduct.ProductId }, tblProduct);
+        //}
+
+        
+
+        //// DELETE: api/TblProducts/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteTblProduct(int id)
+        //{
+        //    var tblProduct = await _context.TblProducts.FindAsync(id);
+        //    if (tblProduct == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.TblProducts.Remove(tblProduct);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
+        //private bool TblProductExists(int id)
+        //{
+        //    return _context.TblProducts.Any(e => e.ProductId == id);
+        //    //_context.TblProducts.Where(e => e.ProductName.Contains(searchText) || e.Description.Contains(searchText)).ToList();
+        //}
 
         private List<ProductViewModel> _GetProductViewModels(List<ProductViewModel> products, List<TblProduct> tblproduct) 
         {

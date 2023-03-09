@@ -39,7 +39,7 @@ public partial class DbStyleSphereContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=KUNJ;Database=db_StyleSphere;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=KUNJ;Database=StyleSphereDB;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,7 +47,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.CategoryId);
 
-            entity.ToTable("tbl_Categories");
+            entity.ToTable("Categories");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName)
@@ -60,7 +60,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.ColorId);
 
-            entity.ToTable("tbl_ColorMaster");
+            entity.ToTable("ColorMaster");
 
             entity.Property(e => e.ColorId).HasColumnName("ColorID");
             entity.Property(e => e.Color)
@@ -72,7 +72,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.CustomerId);
 
-            entity.ToTable("tbl_Customer");
+            entity.ToTable("Customer");
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Address)
@@ -99,7 +99,7 @@ public partial class DbStyleSphereContext : DbContext
         {
 
             entity.HasKey(e => e.FavoriteId);
-            entity.ToTable("tbl_Favorites");
+            entity.ToTable("Favorites");
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.FavoriteId)
@@ -122,7 +122,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.OrderId);
 
-            entity.ToTable("tbl_OrderData");
+            entity.ToTable("OrdersData");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.BillingAddress)
@@ -149,7 +149,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.OrderDetailsId);
 
-            entity.ToTable("tbl_OrderDetail");
+            entity.ToTable("OrderDetails");
 
             entity.Property(e => e.OrderDetailsId).HasColumnName("OrderDetailsID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -172,7 +172,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.ProductId);
 
-            entity.ToTable("tbl_Product");
+            entity.ToTable("Products");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -203,7 +203,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.ProductMappingId);
 
-            entity.ToTable("tbl_ProductMapping");
+            entity.ToTable("ProductMappings");
 
             entity.Property(e => e.ProductMappingId).HasColumnName("ProductMappingID");
             entity.Property(e => e.ColorId).HasColumnName("ColorID");
@@ -230,7 +230,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.RatingId);
 
-            entity.ToTable("tbl_Rating");
+            entity.ToTable("Ratings");
 
             entity.Property(e => e.RatingId).HasColumnName("RatingID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
@@ -251,7 +251,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.SizeId);
 
-            entity.ToTable("tbl_SizeMaster");
+            entity.ToTable("SizesMaster");
 
             entity.Property(e => e.SizeId).HasColumnName("SizeID");
             entity.Property(e => e.Eusize).HasColumnName("EUSize");
@@ -262,7 +262,7 @@ public partial class DbStyleSphereContext : DbContext
         {
             entity.HasKey(e => e.SubCategoryId);
 
-            entity.ToTable("tbl_SubCategories");
+            entity.ToTable("Sub_Categories");
 
             entity.Property(e => e.SubCategoryId).HasColumnName("SubCategoryID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");

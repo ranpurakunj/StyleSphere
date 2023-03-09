@@ -53,81 +53,81 @@ namespace StyleSphere.Controllers
             return categories;
         }
 
-        // GET: api/TblCategories/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TblCategory>> GetTblCategory(int id)
-        {
-            var tblCategory = await _context.TblCategories.FindAsync(id);
+        //// GET: api/TblCategories/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<TblCategory>> GetTblCategory(int id)
+        //{
+        //    var tblCategory = await _context.TblCategories.FindAsync(id);
 
-            if (tblCategory == null)
-            {
-                return NotFound();
-            }
+        //    if (tblCategory == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return tblCategory;
-        }
+        //    return tblCategory;
+        //}
 
-        // PUT: api/TblCategories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTblCategory(int id, TblCategory tblCategory)
-        {
-            if (id != tblCategory.CategoryId)
-            {
-                return BadRequest();
-            }
+        //// PUT: api/TblCategories/5
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutTblCategory(int id, TblCategory tblCategory)
+        //{
+        //    if (id != tblCategory.CategoryId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(tblCategory).State = EntityState.Modified;
+        //    _context.Entry(tblCategory).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TblCategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!TblCategoryExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        // POST: api/TblCategories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<TblCategory>> PostTblCategory(TblCategory tblCategory)
-        {
-            _context.TblCategories.Add(tblCategory);
-            await _context.SaveChangesAsync();
+        //// POST: api/TblCategories
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<TblCategory>> PostTblCategory(TblCategory tblCategory)
+        //{
+        //    _context.TblCategories.Add(tblCategory);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTblCategory", new { id = tblCategory.CategoryId }, tblCategory);
-        }
+        //    return CreatedAtAction("GetTblCategory", new { id = tblCategory.CategoryId }, tblCategory);
+        //}
 
-        // DELETE: api/TblCategories/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTblCategory(int id)
-        {
-            var tblCategory = await _context.TblCategories.FindAsync(id);
-            if (tblCategory == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/TblCategories/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteTblCategory(int id)
+        //{
+        //    var tblCategory = await _context.TblCategories.FindAsync(id);
+        //    if (tblCategory == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.TblCategories.Remove(tblCategory);
-            await _context.SaveChangesAsync();
+        //    _context.TblCategories.Remove(tblCategory);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        private bool TblCategoryExists(int id)
-        {
-            return _context.TblCategories.Any(e => e.CategoryId == id);
-        }
+        //private bool TblCategoryExists(int id)
+        //{
+        //    return _context.TblCategories.Any(e => e.CategoryId == id);
+        //}
     }
 }
