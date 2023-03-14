@@ -52,34 +52,48 @@ namespace StyleSphere.Controllers
         }
 
         [Route("checkout")]
-        [HttpGet]
-        public async Task<ActionResult<OrderDatumViewModel>> Checkout(int customerID)
+        [HttpPost]
+        public async Task<ActionResult<string>> Checkout(CheckoutMaster order)
         {
-            var tblOrderDatum = _context.TblOrderData.Where(a => a.CustomerId == customerID).ToList();
-            List<OrderDatumViewModel> orders = new List<OrderDatumViewModel>();
-            foreach (var order in tblOrderDatum)
+            //var tblOrderDatum = _context.TblOrderData.Where(a => a.CustomerId == customerID).ToList();
+            //List<OrderDatumViewModel> orders = new List<OrderDatumViewModel>();
+            //foreach (var order in tblOrderDatum)
+            //{
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                OrderDatumViewModel model = new OrderDatumViewModel();
-                model.OrderId = order.OrderId;
-                model.CustomerId = order.CustomerId;
-                model.OrderDate = order.OrderDate;
-                model.ShippingAddress = order.ShippingAddress;
-                model.BillingAddress = order.BillingAddress;
-                model.TrackingId = order.TrackingId;
-                model.NetAmount = order.NetAmount;
-                foreach (var detail in order.TblOrderDetails)
+                try
                 {
-                    model.ProductName = detail.ProductMapping.Product.ProductName;
-                    model.thumbnailImage = detail.ProductMapping.Product.ThumbnailImage;
-                    model.Quantity = detail.Quantity;
-                    model.color = detail.ProductMapping.Color.Color;
-                    model.EUSize = detail.ProductMapping.Size.Eusize;
-                    model.USSize = detail.ProductMapping.Size.Ussize;
-                    model.price = detail.Price;
+                    TblOrderDatum model = new TblOrderDatum();
+                    model.OrderId = order.OrderId;
+                    model.CustomerId = order.CustomerId;
+                    model.OrderDate = order.OrderDate;
+                    model.ShippingAddress = order.ShippingAddress;
+                    model.BillingAddress = order.BillingAddress;
+                    model.TrackingId = order.TrackingId;
+                    model.NetAmount = order.NetAmount;
+                    _context.TblOrderData.Add(model);
+                    await _context.SaveChangesAsync();
+                    foreach (var detail in order.OrderDetails)
+                    {
+                        TblOrderDetail detailItem = new TblOrderDetail();
+                        detailItem.Quantity = detail.Quantity;
+                        detailItem.Price = detail.Price;
+                        detailItem.ProductMappingId = detail.ProductMappingId;
+                        detailItem.OrderId = model.OrderId;
+                        detailItem.Total = detailItem.Total;
+                        detailItem.ActiveStatus = true;
+                        _context.TblOrderDetails.Add(detailItem);
+                        await _context.SaveChangesAsync();
+                    }
+                    transaction.Commit();
+                    return Ok(model.OrderId.ToString());
                 }
-                orders.Add(model);
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return Ok(ex.Message);
+                }
             }
-            return Ok(orders);
         }
 
         //// PUT: api/TblOrderDatums/5
