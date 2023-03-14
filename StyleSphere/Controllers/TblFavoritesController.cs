@@ -26,15 +26,16 @@ namespace StyleSphere.Controllers
         //{
         //    return await _context.TblFavorites.ToListAsync();
         //}
-
-        [HttpGet("customer/{customerId}")]
-        public IActionResult GetFavoritesForCustomer(int customerId)
+        
+        [HttpGet("{cId}")]
+        public List<TblFavorite> GetFavoritesForCustomer(int cId)
         {
-            var favorites = _context.TblFavorites
-                                     .Where(f => f.CustomerId == customerId)
-                                     .ToList();
+            var data = _context.TblFavorites.Where(a => a.CustomerId == cId).ToList();
+            //var favorites = _context.TblFavorites
+            //                         .Where(f => f.CustomerId == customerId)
+            //                         .ToList();
 
-            return Ok(favorites);
+            return data;
         }
 
         //// GET: api/TblFavorites/5
@@ -102,9 +103,9 @@ namespace StyleSphere.Controllers
             {
                 CustomerId = customerId,
                 ProductId = productId,
-                ActiveStatus = true,
-                Customer = customer,
-                Product = product
+                ActiveStatus = true
+                //Customer = customer,
+                //Product = product
             };
 
             // Add the new favorite to the database and save changes

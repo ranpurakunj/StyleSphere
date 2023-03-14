@@ -7,9 +7,9 @@ public partial class TblSizeMaster
 {
     public int SizeId { get; set; }
 
-    public int Eusize { get; set; }
+    public string Eusize { get; set; }
 
-    public int Ussize { get; set; }
+    public string Ussize { get; set; }
 
     public bool ActiveStatus { get; set; }
 

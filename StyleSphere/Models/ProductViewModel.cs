@@ -21,8 +21,8 @@ namespace StyleSphere.Models
         public decimal ratings { get; set; }
         public int NoOfRatings { get; set; }
 
-        public List<TblSizeMaster> sizeList;
+        public List<TblSizeMaster> sizeList { get; set; }
 
-        public List<TblColorMaster> ColorList;
+        public List<TblColorMaster> ColorList { get; set; }
     }
 }

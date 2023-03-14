@@ -24,9 +24,9 @@
 
         public string color { get; set; }
 
-        public int EUSize { get; set; }
+        public string EUSize { get; set; }
 
-        public int USSize { get; set; }
+        public string USSize { get; set; }
 
         public decimal price { get; set; }
 

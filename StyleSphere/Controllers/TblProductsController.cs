@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.EntityFrameworkCore;
 using StyleSphere.Models;
 
@@ -24,10 +25,10 @@ namespace StyleSphere.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetTblProducts()
         {
-            List<ProductViewModel> products = new List<ProductViewModel>();
+            //List<ProductViewModel> products = new List<ProductViewModel>();
             var tblproduct = _context.TblProducts.ToList();
-            products = _GetProductViewModels(products, tblproduct);
-            return Ok(products);
+            return _GetProductViewModels(tblproduct);
+            //return Ok(products);
 
         }
 
@@ -37,8 +38,8 @@ namespace StyleSphere.Controllers
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
             var tblProduct = _context.TblProducts.Where(e => e.ProductId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct);
-            return Ok(products); 
+            products = _GetProductViewModels(tblProduct);
+            return Ok(products);
         }
 
         [Route("ProductByCategory")]
@@ -47,7 +48,7 @@ namespace StyleSphere.Controllers
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
             var tblProduct = _context.TblProducts.Where(e => e.CategoryId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct);
+            products = _GetProductViewModels(tblProduct);
             return Ok(Ok(products));
         }
 
@@ -57,7 +58,7 @@ namespace StyleSphere.Controllers
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
             var tblProduct = _context.TblProducts.Where(e => e.SubCategoryId == id).ToList();
-            products = _GetProductViewModels(products, tblProduct);
+            products = _GetProductViewModels(tblProduct);
             return Ok(products);
         }
 
@@ -67,7 +68,7 @@ namespace StyleSphere.Controllers
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
             var tblProduct = _context.TblProducts.Where(e => e.Price <= price).ToList();
-            products = _GetProductViewModels(products, tblProduct);
+            products = _GetProductViewModels(tblProduct);
             return Ok(products);
         }
 
@@ -77,7 +78,7 @@ namespace StyleSphere.Controllers
         {
             List<ProductViewModel> products = new List<ProductViewModel>();
             var tblproduct3 = _context.TblProducts.Where(e => e.ProductName.Contains(SearchText) || e.Description.Contains(SearchText)).ToList();
-            products = _GetProductViewModels(products, tblproduct3);
+            products = _GetProductViewModels(tblproduct3);
             return Ok(products);
         }
 
@@ -147,8 +148,9 @@ namespace StyleSphere.Controllers
         //    //_context.TblProducts.Where(e => e.ProductName.Contains(searchText) || e.Description.Contains(searchText)).ToList();
         //}
 
-        private List<ProductViewModel> _GetProductViewModels(List<ProductViewModel> products, List<TblProduct> tblproduct) 
+        private List<ProductViewModel> _GetProductViewModels(List<TblProduct> tblproduct) 
         {
+            List<ProductViewModel> products = new List<ProductViewModel>();
             foreach (var items in tblproduct)
             {
                 ProductViewModel model = new ProductViewModel();
@@ -160,27 +162,40 @@ namespace StyleSphere.Controllers
                 model.ThumbnailImage = items.ThumbnailImage;
                 model.Price = items.Price;
                 model.Description = items.Description;
-                model.ColorCount = items.TblProductMappings.Select(a => a.ColorId).Distinct().Count();
-                model.NoOfRatings = items.TblRatings.Count();
-                model.ratings = (items.TblRatings.Select(a => a.Rating).Sum() / items.TblRatings.Count());
+                //model.ColorCount = items.TblProductMappings.Select(a => a.ColorId).Distinct().Count();
+                // Ratings Count
+                var ratingsData = _context.TblRatings.Where(a => a.ProductId == items.ProductId).ToList();
+                model.NoOfRatings = ratingsData.Count();
+                if (ratingsData.Count() > 0)
+                    model.ratings = (ratingsData.Sum(a => a.Rating) / ratingsData.Count());
+                else
+                    model.ratings = 0;
 
-                List<TblSizeMaster> sizeList = new List<TblSizeMaster>();
+                List <TblSizeMaster> sizeList = new List<TblSizeMaster>();
                 List<TblColorMaster> ColorList = new List<TblColorMaster>();
-                foreach (var item in items.TblProductMappings)
+                var mapppingsData = _context.TblProductMappings.Where(a => a.ProductId == items.ProductId).ToList();
+                model.ColorCount = mapppingsData.Select(a => a.ColorId).Distinct().Count();
+                foreach (var item in mapppingsData)
                 {
                     var colorData = _context.TblColorMasters.Where(a => a.ColorId == item.ColorId).FirstOrDefault();
                     var sizeData = _context.TblSizeMasters.Where(a => a.SizeId == item.SizeId).FirstOrDefault();
 
-                    TblSizeMaster objSize = new TblSizeMaster();
-                    objSize.SizeId = item.SizeId;
-                    objSize.Eusize = sizeData.Eusize;
-                    objSize.Ussize = sizeData.Ussize;
-                    sizeList.Add(objSize);
+                    if (sizeData != null)
+                    {
+                        TblSizeMaster objSize = new TblSizeMaster();
+                        objSize.SizeId = item.SizeId;
+                        objSize.Eusize = sizeData.Eusize;
+                        objSize.Ussize = sizeData.Ussize;
+                        sizeList.Add(objSize);
+                    }
 
-                    TblColorMaster objColor = new TblColorMaster();
-                    objColor.ColorId = item.ColorId;
-                    objColor.Color = colorData.Color;
-                    ColorList.Add(objColor);
+                    if (colorData != null)
+                    {
+                        TblColorMaster objColor = new TblColorMaster();
+                        objColor.ColorId = item.ColorId;
+                        objColor.Color = colorData.Color;
+                        ColorList.Add(objColor);
+                    }
                 }
                 model.ColorList = ColorList;
                 model.sizeList = sizeList;
