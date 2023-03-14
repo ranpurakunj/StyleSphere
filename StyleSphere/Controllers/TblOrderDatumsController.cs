@@ -71,6 +71,7 @@ namespace StyleSphere.Controllers
                     model.BillingAddress = order.BillingAddress;
                     model.TrackingId = order.TrackingId;
                     model.NetAmount = order.NetAmount;
+                    model.ActiveStatus= order.ActiveStatus;
                     _context.TblOrderData.Add(model);
                     await _context.SaveChangesAsync();
                     foreach (var detail in order.OrderDetails)
