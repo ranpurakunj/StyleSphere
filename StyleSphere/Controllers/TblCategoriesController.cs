@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StyleSphere.Models;
+using StyleSphere.Services;
 
 namespace StyleSphere.Controllers
 {
@@ -13,44 +9,25 @@ namespace StyleSphere.Controllers
     [ApiController]
     public class TblCategoriesController : ControllerBase
     {
-        private readonly DbStyleSphereContext _context;
+        private readonly ICategoriesService _categoriesService;
 
-        public TblCategoriesController(DbStyleSphereContext context)
+        public TblCategoriesController(ICategoriesService categoriesService)
         {
-            _context = context;
+            _categoriesService = categoriesService;
         }
 
         // GET: api/TblCategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            var categories = await _context.TblCategories
-                .Select(c => new CategoryDto
-                {
-                    CategoryId = c.CategoryId,
-                    CategoryName = c.CategoryName,
-                    Description = c.Description
-                })
-                .ToListAsync();
-
-            return categories;
+            return await _categoriesService.GetCategoriesAsync();
         }
 
         [HttpGet]
         [Route("ShowOnTop")]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetShowonTopCategories()
+        public async Task<IActionResult> GetShowonTopCategories()
         {
-            var categories = await _context.TblCategories
-                .Where(c=>c.ShowOnTop)
-                .Select(c => new CategoryDto
-                {
-                    CategoryId = c.CategoryId,
-                    CategoryName = c.CategoryName,
-                    Description = c.Description
-                })
-                .ToListAsync();
-
-            return categories;
+            return await _categoriesService.GetShowOnTopCategories();
         }
 
         //// GET: api/TblCategories/5

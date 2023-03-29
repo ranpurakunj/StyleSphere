@@ -36,4 +36,6 @@ public partial class TblProduct
     public virtual ICollection<TblProductMapping> TblProductMappings { get; } = new List<TblProductMapping>();
 
     public virtual ICollection<TblRating> TblRatings { get; } = new List<TblRating>();
+    public virtual ICollection<TblFavorite> TblFavorites { get; } = new List<TblFavorite>();
+
 }

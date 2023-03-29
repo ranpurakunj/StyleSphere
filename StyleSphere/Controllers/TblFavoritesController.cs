@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using StyleSphere.Models;
+using StyleSphere.Services;
 
 namespace StyleSphere.Controllers
 {
@@ -13,11 +8,11 @@ namespace StyleSphere.Controllers
     [ApiController]
     public class TblFavoritesController : ControllerBase
     {
-        private readonly DbStyleSphereContext _context;
+        private readonly IFavoriteService _favoriteService;
 
-        public TblFavoritesController(DbStyleSphereContext context)
+        public TblFavoritesController(IFavoriteService favoriteService)
         {
-            _context = context;
+            _favoriteService = favoriteService;
         }
 
         // GET: api/TblFavorites
@@ -28,14 +23,9 @@ namespace StyleSphere.Controllers
         //}
         
         [HttpGet("{cId}")]
-        public List<TblFavorite> GetFavoritesForCustomer(int cId)
+        public async Task<IActionResult> GetFavoritesForCustomer(int cId)
         {
-            var data = _context.TblFavorites.Where(a => a.CustomerId == cId).ToList();
-            //var favorites = _context.TblFavorites
-            //                         .Where(f => f.CustomerId == customerId)
-            //                         .ToList();
-
-            return data;
+            return await _favoriteService.GetFavoritesByCustomerId(cId);
         }
 
         //// GET: api/TblFavorites/5
@@ -86,34 +76,9 @@ namespace StyleSphere.Controllers
         // POST: api/TblFavorites
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> SaveFavorite(int customerId, int productId)
+        public async Task<IActionResult> SaveFavorite(int customerId, int productId, TblFavorite tblFavorite)
         {
-            // Get the customer and product from the database
-            var customer = await _context.TblCustomers.FindAsync(customerId);
-            var product = await _context.TblProducts.FindAsync(productId);
-
-            // If either the customer or product is not found, return a 404 error
-            if (customer == null || product == null)
-            {
-                return NotFound();
-            }
-
-            // Create a new favorite object and set its properties
-            var favorite = new TblFavorite
-            {
-                CustomerId = customerId,
-                ProductId = productId,
-                ActiveStatus = true
-                //Customer = customer,
-                //Product = product
-            };
-
-            // Add the new favorite to the database and save changes
-            _context.TblFavorites.Add(favorite);
-            await _context.SaveChangesAsync();
-
-            // Return a success response
-            return Ok();
+            return await _favoriteService.SaveFavorites(customerId,productId, tblFavorite);
         }
 
         //// DELETE: api/TblFavorites/5

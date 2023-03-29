@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc;
 using StyleSphere.Models;
+using StyleSphere.Services;
 
 namespace StyleSphere.Controllers
 {
@@ -14,11 +8,11 @@ namespace StyleSphere.Controllers
     [ApiController]
     public class TblOrderDatumsController : ControllerBase
     {
-        private readonly DbStyleSphereContext _context;
+        private readonly IOrderDatumService _orderDatumService;
 
-        public TblOrderDatumsController(DbStyleSphereContext context)
+        public TblOrderDatumsController(IOrderDatumService orderDatumService)
         {
-            _context = context;
+            _orderDatumService= orderDatumService;
         }
 
         // GET: api/TblOrderDatums
@@ -30,71 +24,17 @@ namespace StyleSphere.Controllers
 
         // GET: api/TblOrderDatums/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderDataDto>> GetTblOrderDatumByCustomerID(int id)
+        public async Task<IActionResult> GetTblOrderDatumByCustomerID(int id)
         {
-            var tblOrderDatum = _context.TblOrderData
-                .Where(e => e.CustomerId == id)
-                .Select(c=>new OrderDataDto
-                {
-                    OrderId = c.OrderId,
-                    CustomerId = c.CustomerId,
-                    OrderDate = c.OrderDate,
-                    ShippingAddress = c.ShippingAddress,
-                    BillingAddress = c.BillingAddress,
-                    TrackingId = c.TrackingId,
-                    NetAmount = c.NetAmount
-                }).ToList();
-            if (tblOrderDatum == null)
-            {
-                return NotFound();
-            }
-            return Ok(tblOrderDatum);
+            return await _orderDatumService.GetOrderDataByCustomerId(id);
         }
 
         [Route("checkout")]
         [HttpPost]
-        public async Task<ActionResult<string>> Checkout(CheckoutMaster order)
+        public async Task<IActionResult> Checkout(CheckoutMaster order)
         {
-            //var tblOrderDatum = _context.TblOrderData.Where(a => a.CustomerId == customerID).ToList();
-            //List<OrderDatumViewModel> orders = new List<OrderDatumViewModel>();
-            //foreach (var order in tblOrderDatum)
-            //{
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    TblOrderDatum model = new TblOrderDatum();
-                    model.OrderId = order.OrderId;
-                    model.CustomerId = order.CustomerId;
-                    model.OrderDate = order.OrderDate;
-                    model.ShippingAddress = order.ShippingAddress;
-                    model.BillingAddress = order.BillingAddress;
-                    model.TrackingId = order.TrackingId;
-                    model.NetAmount = order.NetAmount;
-                    model.ActiveStatus= order.ActiveStatus;
-                    _context.TblOrderData.Add(model);
-                    await _context.SaveChangesAsync();
-                    foreach (var detail in order.OrderDetails)
-                    {
-                        TblOrderDetail detailItem = new TblOrderDetail();
-                        detailItem.Quantity = detail.Quantity;
-                        detailItem.Price = detail.Price;
-                        detailItem.ProductMappingId = detail.ProductMappingId;
-                        detailItem.OrderId = model.OrderId;
-                        detailItem.Total = detail.Total;
-                        detailItem.ActiveStatus = true;
-                        _context.TblOrderDetails.Add(detailItem);
-                        await _context.SaveChangesAsync();
-                    }
-                    transaction.Commit();
-                    return Ok(model.OrderId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    return Ok(ex.Message);
-                }
-            }
+            return await _orderDatumService.Checkout(order);
+            
         }
 
         //// PUT: api/TblOrderDatums/5

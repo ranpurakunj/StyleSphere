@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR.Protocol;
-using Microsoft.EntityFrameworkCore;
-using StyleSphere.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using StyleSphere.Services;
 
 namespace StyleSphere.Controllers
 {
@@ -14,72 +7,54 @@ namespace StyleSphere.Controllers
     [ApiController]
     public class TblProductsController : ControllerBase
     {
-        private readonly DbStyleSphereContext _context;
-
-        public TblProductsController(DbStyleSphereContext context)
+        
+        private readonly IProductsService _productsService;
+        public TblProductsController(IProductsService productsService)
         {
-            _context = context;
+            _productsService= productsService;
         }
 
         // GET: api/TblProducts
+        //[Route("ListAllProducts")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetTblProducts()
+        public async Task<IActionResult> GetTblProducts()
         {
-            //List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblproduct = _context.TblProducts.ToList();
-            return _GetProductViewModels(tblproduct);
-            //return Ok(products);
-
+            return await _productsService.GetAllProducts();
         }
 
         // GET: api/TblProducts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductViewModel>> GetTblProduct(int id)
+        public async Task<IActionResult> GetTblProduct(int id)
         {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct = _context.TblProducts.Where(e => e.ProductId == id).ToList();
-            products = _GetProductViewModels(tblProduct);
-            return Ok(products);
+            return await _productsService.GetProductsById(id);
         }
 
         [Route("ProductByCategory")]
         [HttpGet]
-        public async Task<ActionResult<ProductViewModel>> GetTblProductByCategory(int id)
+        public async Task<IActionResult> GetTblProductByCategory(int id)
         {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct = _context.TblProducts.Where(e => e.CategoryId == id).ToList();
-            products = _GetProductViewModels(tblProduct);
-            return Ok(Ok(products));
+            return await _productsService.GetProductsByCategory(id);
         }
 
         [Route("ProductBySubCategory")]
         [HttpGet]
-        public async Task<ActionResult<ProductViewModel>> GetTblProductBySubCategory(int id)
+        public async Task<IActionResult> GetTblProductBySubCategory(int id)
         {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct = _context.TblProducts.Where(e => e.SubCategoryId == id).ToList();
-            products = _GetProductViewModels(tblProduct);
-            return Ok(products);
+            return await _productsService.GetProductsBySubCategory(id);
         }
 
         [Route("ProductUnderPrice")]
         [HttpGet]
-        public async Task<ActionResult<ProductViewModel>> GetTblProductUnderPrice(decimal price)
+        public async Task<IActionResult> GetTblProductUnderPrice(decimal price)
         {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblProduct = _context.TblProducts.Where(e => e.Price <= price).ToList();
-            products = _GetProductViewModels(tblProduct);
-            return Ok(products);
+            return await _productsService.GetProductUnderPrice(price);
         }
 
         [Route("search")]
         [HttpPost]
-        public async Task<ActionResult<ProductViewModel>> SearchProduct(string SearchText)
-        {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            var tblproduct3 = _context.TblProducts.Where(e => e.ProductName.Contains(SearchText) || e.Description.Contains(SearchText)).ToList();
-            products = _GetProductViewModels(tblproduct3);
-            return Ok(products);
+        public async Task<IActionResult> SearchProduct(string SearchText)
+        {   
+            return await _productsService.GetSearchedProducts(SearchText);
         }
 
         // PUT: api/TblProducts/5
@@ -148,60 +123,6 @@ namespace StyleSphere.Controllers
         //    //_context.TblProducts.Where(e => e.ProductName.Contains(searchText) || e.Description.Contains(searchText)).ToList();
         //}
 
-        private List<ProductViewModel> _GetProductViewModels(List<TblProduct> tblproduct) 
-        {
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            foreach (var items in tblproduct)
-            {
-                ProductViewModel model = new ProductViewModel();
-                model.ProductId = items.ProductId;
-                model.ProductName = items.ProductName;
-                model.Image1 = items.Image1;
-                model.Image2 = items.Image2;
-                model.Image3 = items.Image3;
-                model.ThumbnailImage = items.ThumbnailImage;
-                model.Price = items.Price;
-                model.Description = items.Description;
-                //model.ColorCount = items.TblProductMappings.Select(a => a.ColorId).Distinct().Count();
-                // Ratings Count
-                var ratingsData = _context.TblRatings.Where(a => a.ProductId == items.ProductId).ToList();
-                model.NoOfRatings = ratingsData.Count();
-                if (ratingsData.Count() > 0)
-                    model.ratings = (ratingsData.Sum(a => a.Rating) / ratingsData.Count());
-                else
-                    model.ratings = 0;
-
-                List <TblSizeMaster> sizeList = new List<TblSizeMaster>();
-                List<TblColorMaster> ColorList = new List<TblColorMaster>();
-                var mapppingsData = _context.TblProductMappings.Where(a => a.ProductId == items.ProductId).ToList();
-                model.ColorCount = mapppingsData.Select(a => a.ColorId).Distinct().Count();
-                foreach (var item in mapppingsData)
-                {
-                    var colorData = _context.TblColorMasters.Where(a => a.ColorId == item.ColorId).FirstOrDefault();
-                    var sizeData = _context.TblSizeMasters.Where(a => a.SizeId == item.SizeId).FirstOrDefault();
-
-                    if (sizeData != null)
-                    {
-                        TblSizeMaster objSize = new TblSizeMaster();
-                        objSize.SizeId = item.SizeId;
-                        objSize.Eusize = sizeData.Eusize;
-                        objSize.Ussize = sizeData.Ussize;
-                        sizeList.Add(objSize);
-                    }
-
-                    if (colorData != null)
-                    {
-                        TblColorMaster objColor = new TblColorMaster();
-                        objColor.ColorId = item.ColorId;
-                        objColor.Color = colorData.Color;
-                        ColorList.Add(objColor);
-                    }
-                }
-                model.ColorList = ColorList;
-                model.sizeList = sizeList;
-                products.Add(model);
-            }
-            return products;
-        }
+        
     }
 }

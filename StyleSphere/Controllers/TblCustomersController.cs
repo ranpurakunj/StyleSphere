@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using StyleSphere.Models;
+using StyleSphere.Services;
 
 namespace StyleSphere.Controllers
 {
@@ -13,11 +8,15 @@ namespace StyleSphere.Controllers
     [ApiController]
     public class TblCustomersController : ControllerBase
     {
-        private readonly DbStyleSphereContext _context;
+        private readonly ICustomerService _customerService;
 
-        public TblCustomersController(DbStyleSphereContext context)
+        // We don't need this if we are using dependency injections for all API calls. _context can be declared and defined in the service class and its contructors.
+        //private readonly DbStyleSphereContext _context; 
+        
+        //We don't need to pass instance of the DBContext as a parameter if Dependency is used for the same reasons as mentioned above.
+        public TblCustomersController( ICustomerService customerService)
         {
-            _context = context;
+            _customerService = customerService;
         }
 
         // GET: api/TblCustomers
@@ -41,34 +40,25 @@ namespace StyleSphere.Controllers
         //    return tblCustomer;
         //}
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCustomerbyId(int id)
+        {
+            return await _customerService.GetCustomer(id);
+        }
+
         [Route("login")]
         [HttpGet]
-        public async Task<ActionResult<TblCustomer>> LoginCustomer(string email, string password)
+        public async Task<IActionResult> LoginCustomer(string email, string password)
         {
-            var customer = _context.TblCustomers.SingleOrDefault(c => c.Email == email);
-            if (customer == null || customer.Password != password)
-            {
-                return BadRequest("Invalid Email or Password");
-            }
-            return Ok(customer);
+            return await _customerService.LoginCustomer(email, password);
         }
 
         // POST: api/TblCustomers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TblCustomer>> PostTblCustomer(TblCustomer tblCustomer)
+        public async Task<IActionResult> Register(TblCustomer tblCustomer)
         {
-            if (TblCustomerExists(tblCustomer.Email))
-            {
-                return BadRequest();
-            }
-            else
-            {
-                _context.TblCustomers.Add(tblCustomer);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("PostTblCustomer", new { id = tblCustomer.CustomerId }, tblCustomer);
-            }
+            return await _customerService.RegisterCustomer(tblCustomer);
 
         }
 
@@ -119,9 +109,5 @@ namespace StyleSphere.Controllers
         //    return NoContent();
         //}
 
-        private bool TblCustomerExists(string email)
-        {
-            return _context.TblCustomers.Any(e => e.Email == email);
-        }
     }
 }
