@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <img src="{{ product?.thumbnailImage }}" alt="{{ product?.productName }}">
+      <div class="product-gallery">
+        <img *ngIf="product?.image1" src="{{ product?.image1 }}" alt="{{ product?.productName }}">
+        <img *ngIf="product?.image2" src="{{ product?.image2 }}" alt="{{ product?.productName }}">
+        <img *ngIf="product?.image3" src="{{ product?.image3 }}" alt="{{ product?.productName }}">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h2>{{ product?.productName }}</h2>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity()">
+            <i class="bi bi-dash"></i>
+          </button>
+        </div>
+        <input type="text" class="form-control" [(ngModel)]="quantity" [ngModelOptions]="{standalone: true}">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" (click)="incrementQuantity()">
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>      
+      <p>{{ product?.description }}</p>
+      <p>Price: {{ product?.price | currency }}</p>
+      <p>Ratings: {{ product?.ratings }} ({{ product?.noOfRatings }} reviews)</p>
+      <div class="size-color-selector">
+        <div class="form-group">
+          <label for="size">Select Size:</label>
+          <select id="size" class="form-control" [(ngModel)]="selectedSize" (ngModelChange)="setAvailableColors()">
+            <option *ngFor="let size of product?.sizeList" [value]="size.eusize" [disabled]="!isSizeAvailable(size.eusize)">
+              {{ size.eusize }} ({{ size.ussize }})
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="color">Select Color:</label>
+          <div class="color-selector">
+            <button *ngFor="let color of availableColors" type="button" class="btn" [style.backgroundColor]="color"
+              [disabled]="!isColorAvailable(color)" (click)="selectColor(color)">
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" [disabled]="!selectedSize || !selectedColor" (click)="addToCart(); showSuccessModal()">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show': showSuccessModal}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hideSuccessModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Product added to cart successfully!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="hideSuccessModal()">Close</button>
+        <button type="button" class="btn btn-primary" routerLink="/cart">View Cart</button>
+      </div>
+    </div>
+  </div>
+</div>

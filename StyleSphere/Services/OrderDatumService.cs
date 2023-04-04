@@ -37,7 +37,6 @@ namespace StyleSphere.Services
                         detailItem.Price = detail.Price;
                         detailItem.ProductMappingId = detail.ProductMappingId;
                         detailItem.OrderId = model.OrderId;
-                        detailItem.Total = detail.Total;
                         detailItem.ActiveStatus = true;
                         _context.TblOrderDetails.Add(detailItem);
                         await _context.SaveChangesAsync();

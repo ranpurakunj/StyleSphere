@@ -1,0 +1,39 @@
+.container {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+}
+
+.navbar {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  display: block;
+}
+
+.navbar i {
+  font-size: 1.5em;
+}
+
+.sidebar {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.top-buttons {
+  grid-row: 2;
+  grid-column: 2 / -1;
+}
+
+.product-cards {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+/* Style for each child container */
+.navbar,
+.sidebar,
+.top-buttons,
+.product-cards {
+  padding: 10px;
+}

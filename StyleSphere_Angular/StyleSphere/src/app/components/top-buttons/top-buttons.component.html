@@ -1,0 +1,11 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12 d-flex justify-content-center">
+        <button class="btn btn-primary m-1" (click)="navigateToProductbyPrice(10)">Under $10</button>
+        <button class="btn btn-primary m-1" (click)="navigateToProductbyPrice(20)">Under $20</button>
+        <button *ngFor="let category of categories" class="btn btn-primary m-1" (click)="navigateToProductbyCategory(category.categoryId)">{{ category.categoryName }}</button>
+        <button class="btn btn-primary m-1" (click)="navigateToAllProduct()">Home</button>
+      </div>
+    </div>
+  </div>
+  

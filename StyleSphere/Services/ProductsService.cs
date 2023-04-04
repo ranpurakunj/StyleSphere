@@ -80,10 +80,14 @@ namespace StyleSphere.Services
 
                 List<TblSizeMaster> sizeList = new List<TblSizeMaster>();
                 List<TblColorMaster> ColorList = new List<TblColorMaster>();
+                List<ProductMappingViewModel> mappings = new List<ProductMappingViewModel>();
                 var mapppingsData = _context.TblProductMappings.Where(a => a.ProductId == items.ProductId).ToList();
                 model.ColorCount = mapppingsData.Select(a => a.ColorId).Distinct().Count();
                 foreach (var item in mapppingsData)
                 {
+                    ProductMappingViewModel productMapping = new ProductMappingViewModel();
+                    productMapping.ProductMappingId = item.ProductMappingId;
+                    productMapping.ProductId = item.ProductId;
                     var colorData = _context.TblColorMasters.Where(a => a.ColorId == item.ColorId).FirstOrDefault();
                     var sizeData = _context.TblSizeMasters.Where(a => a.SizeId == item.SizeId).FirstOrDefault();
 
@@ -92,7 +96,9 @@ namespace StyleSphere.Services
                         TblSizeMaster objSize = new TblSizeMaster();
                         objSize.SizeId = item.SizeId;
                         objSize.Eusize = sizeData.Eusize;
+                        productMapping.EUSize = sizeData.Eusize;
                         objSize.Ussize = sizeData.Ussize;
+                        productMapping.UsSize = sizeData.Ussize;
                         sizeList.Add(objSize);
                     }
 
@@ -101,9 +107,12 @@ namespace StyleSphere.Services
                         TblColorMaster objColor = new TblColorMaster();
                         objColor.ColorId = item.ColorId;
                         objColor.Color = colorData.Color;
+                        productMapping.Color = colorData.Color;
                         ColorList.Add(objColor);
                     }
+                    mappings.Add(productMapping);
                 }
+                model.mappingList= mappings;
                 model.ColorList = ColorList;
                 model.sizeList = sizeList;
                 products.Add(model);

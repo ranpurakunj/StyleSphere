@@ -8,6 +8,7 @@ namespace StyleSphere.Models
         {
             sizeList = new List<TblSizeMaster>();
             ColorList = new List<TblColorMaster>();
+            mappingList = new List<ProductMappingViewModel>();
         }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
@@ -20,6 +21,7 @@ namespace StyleSphere.Models
         public string Description { get; set; }
         public decimal ratings { get; set; }
         public int NoOfRatings { get; set; }
+        public List<ProductMappingViewModel> mappingList { get; set; }
 
         public List<TblSizeMaster> sizeList { get; set; }
 

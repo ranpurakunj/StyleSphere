@@ -1,0 +1,24 @@
+<div class="container">
+  <nav class="navbar bg-body-tertiary">
+    <div class="container">
+      <div class="navbar-brand" href="#" style="padding-right: 5px;">
+        <img src="../../../assets/techprojects.jpeg" alt="Bootstrap" width="100" height="24">
+      </div>
+      <form class="d-flex ms-3" role="search">
+        <input class="form-control me-2" name="searchText" [(ngModel)]="searchText" type="search" placeholder="Search"
+          aria-label="Search" style="width: 500px;">
+        <button class="btn btn-outline-success" type="button" (click)="onSearch()">Search</button>
+      </form>
+      <div class="d-flex justify-content-end align-items-center">
+        <ng-container *ngIf="!isLoggedIn">
+          <i class="bi bi-person-fill me-3" (click)="goToLogin()" style="cursor: pointer;"></i>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <button class="btn btn-outline-danger me-3" (click)="logout()">Logout</button>
+        </ng-container>
+        <i class="bi bi-cart me-3" (click)="goToCart()" style="cursor: pointer;"></i>
+      </div>
+    </div>
+
+  </nav>
+</div>
