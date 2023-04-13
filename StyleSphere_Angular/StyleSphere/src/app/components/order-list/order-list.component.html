@@ -1,0 +1,44 @@
+<div class="mat-elevation-z8">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Filter">
+    </mat-form-field>
+  
+    <mat-table [dataSource]="dataSource" matSort>
+  
+      <ng-container matColumnDef="orderId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Order Id </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.orderId}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="orderDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Order Date </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.orderDate | date:'shortDate'}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="shippingAddress">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Shipping Address </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.shippingAddress}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="billingAddress">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Billing Address </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.billingAddress}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="trackingId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tracking Id </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.trackingId}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="netAmount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Net Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.netAmount | currency:'USD'}} </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple></mat-row>
+    </mat-table>
+  
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+  

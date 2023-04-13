@@ -56,7 +56,7 @@ namespace StyleSphere.Services
         }
 
         private List<ProductViewModel> _GetProductViewModels(List<TblProduct> tblproduct)
-        {
+        {   
             List<ProductViewModel> products = new List<ProductViewModel>();
             foreach (var items in tblproduct)
             {

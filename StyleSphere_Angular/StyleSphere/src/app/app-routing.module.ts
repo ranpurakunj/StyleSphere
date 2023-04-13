@@ -8,6 +8,7 @@ import { ProductCardsComponent } from './components/product-cards/product-cards.
 import { AppContainerComponent } from './components/app-container/app-container.component';
 import { ViewCartComponent } from './components/view-cart/view-cart.component';
 import { RegisterComponent } from './components/register/register.component';
+import { OrderListComponent } from './components/order-list/order-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'product-details/:id', component: ProductDetailsComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'orderlist', component:OrderListComponent},
   {path:'checkout', component:CheckoutComponent}  
 ];
 

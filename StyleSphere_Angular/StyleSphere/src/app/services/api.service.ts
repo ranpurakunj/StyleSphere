@@ -62,7 +62,7 @@ export class ApiService {
   }  
 
   getOrderData(id:number): Observable<any>{
-    return this.http.get(this.rooturl+'TblOrderDatum/'+id);
+    return this.http.get(this.rooturl+'TblOrderDatums/'+id);
   }
 
   postOrderData(orderData: any): Observable<any> {
